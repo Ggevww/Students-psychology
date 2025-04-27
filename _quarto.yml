@@ -7,7 +7,12 @@ website:
     left:
       - href: index.qmd
         text: Home
+      - href: Data analysis.qmd
+        text: Data analysis
       - about.qmd
+      - href: Sources.qmd
+        text: Sources
+      
 
 format:
   html:
