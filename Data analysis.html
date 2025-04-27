@@ -115,8 +115,16 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#demographic-analysis" id="toc-demographic-analysis" class="nav-link" data-scroll-target="#demographic-analysis">Demographic Analysis</a></li>
+  <li><a href="#academic-and-work-related-factors" id="toc-academic-and-work-related-factors" class="nav-link" data-scroll-target="#academic-and-work-related-factors">Academic and Work-Related Factors</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -140,8 +148,91 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>In today’s fast-paced academic environment, mental health issues such as depression have become increasingly prevalent among students. This project focuses on analyzing a large dataset of students to uncover patterns and factors associated with depression levels. The dataset contains information on demographics, academic pressure, work pressure, sleep habits, dietary practices, financial stress, satisfaction with study and work, and family history of mental illness.</p>
+<p>The primary goal of this analysis is to understand how various personal, academic, and lifestyle factors contribute to depression among students. By exploring relationships between variables such as sleep duration, CGPA, financial stress, and suicidal thoughts, we aim to identify key areas that may require attention for mental health support and intervention programs.</p>
+<p>Through a combination of descriptive statistics, visual exploration, and correlation analysis, this study provides insights that can help educators, counselors, and policymakers develop better strategies to support student mental health and well-being.</p>
+</section>
+<section id="demographic-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="demographic-analysis">Demographic Analysis</h2>
+<p>Understanding the demographic distribution of the students provides valuable context for interpreting the results of the study. The following aspects were analyzed:</p>
+<ul>
+<li><strong>Gender Distribution:</strong> The proportion of male and female students was examined.</li>
+<li><strong>Age Distribution:</strong> The age range and average age of the students were explored.</li>
+<li><strong>City Distribution:</strong> The number of students from each major city was calculated.</li>
+<li><strong>Profession:</strong> The dominant professions (e.g., Student, Working Professional) were identified.</li>
+</ul>
+<p>These basic insights help characterize the sample and reveal any biases or patterns in the demographic background of the participants.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Data-analysis_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Data-analysis_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Data-analysis_files/figure-html/unnamed-chunk-4-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="academic-and-work-related-factors" class="level2">
+<h2 class="anchored" data-anchor-id="academic-and-work-related-factors">Academic and Work-Related Factors</h2>
+<p>This plot shows a positive relationship between academic pressure and depression levels. As academic pressure increases, there is a slight upward trend in depression symptoms among students.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Data-analysis_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The bar chart shows the distribution of depression cases across different CGPA groups. Students with higher CGPA scores (8–10) report the highest number of depression cases, suggesting a potential link between academic achievement and mental health challenges. Lower CGPA groups (&lt;6) exhibit fewer cases of depression, indicating that higher academic performance may correlate with increased psychological pressure.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Data-analysis_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The bar chart shows the number of depressed students across different degree types. Students in Class 12 report the highest number of depression cases, followed by degrees like B.Ed, B.Arch, and B.Com. Higher education degrees such as PhD, MBA, and LLM show fewer depression cases, possibly due to smaller sample sizes or better coping mechanisms developed over time.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Data-analysis_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Data-analysis_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This scatter plot illustrates the relationship between sleep duration and depression levels among students. Sleep duration is categorized into “Less than 5 hours,” “5–6 hours,” “7–8 hours,” “More than 8 hours,” and “Others.” Each point represents an individual student’s depression score, with jittering applied to better display the density of data points. The majority of depression scores fall between 0 and 1.5 across all sleep categories. Students sleeping less than 7 hours tend to show a broader spread of depression levels compared to those sleeping 7–8 hours or more. The “Others” category contains very few observations, suggesting it represents a small and potentially atypical group. Different colors distinguish the sleep categories, and a minimalistic design enhances clarity and focus on the patterns within the data.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
