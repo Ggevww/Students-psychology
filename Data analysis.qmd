@@ -163,31 +163,225 @@ depstud_cleaned %>%
   )
 
 ```
-
+## Lifestyle Factors
+This chart shows that people who sleep less than 5 hours have a higher percentage of depression, while as individuals' sleep duration approaches the recommended amount, the percentage of those suffering from depression decreases.
 ```{r}
 depstud_cleaned %>%
-  mutate(`Sleep Duration` = gsub("'", "", `Sleep Duration`),
-         `Sleep Duration` = factor(`Sleep Duration`, 
-                                   levels = c("Less than 5 hours", "5-6 hours", "7-8 hours", "More than 8 hours", "Others"))) %>%
-  ggplot(aes(x = `Sleep Duration`, y = Depression, color = `Sleep Duration`)) +
-  geom_point(position = position_jitter(width = 0.2), size = 0.1, alpha = 0.7) +  # jitter to avoid overplotting
-  scale_color_brewer(palette = "Set2") +
+  mutate(
+    `Sleep Duration` = gsub("'", "", `Sleep Duration`),
+    `Sleep Duration` = factor(`Sleep Duration`, 
+                              levels = c("Less than 5 hours", "5-6 hours", "7-8 hours", "More than 8 hours")),
+    Depression = as.numeric(Depression),
+    Depressed = ifelse(Depression == 1, "Depressed", "Not Depressed")
+  ) %>%
+  filter(!is.na(`Sleep Duration`), !is.na(Depressed)) %>%
+  count(`Sleep Duration`, Depressed) %>%  # Count occurrences for each combination
+  group_by(`Sleep Duration`) %>%  # Group by `Sleep Duration` to calculate percentages
+  mutate(percentage = n / sum(n)) %>%  # Calculate percentage for each group
+  ggplot(aes(x = `Sleep Duration`, y = percentage, fill = Depressed)) +
+  geom_bar(stat = "identity", position = "stack") +  # Use stat = "identity" for pre-calculated percentages
+  scale_fill_manual(values = c("Depressed" = "#d62728", "Not Depressed" = "#2ca02c")) +
   labs(
-    title = "Depression Levels by Sleep Duration",
+    title = "Depression Status by Sleep Duration",
     x = "Sleep Duration",
-    y = "Depression Level"
+    y = "Percentage of Students",
+    fill = "Depression Status"
+  ) +
+  theme_minimal() +
+  geom_text(
+    aes(label = scales::percent(percentage)),
+    position = position_stack(vjust = 0.5),
+    color = "white"
+  )
+
+
+
+
+```
+This chart shows the percentage of students who are depressed or not within each dietary habit group: Healthy, Moderate, and Unhealthy. Each pie chart represents one group, with orange indicating Depressed and blue indicating Not Depressed. It helps highlight how depression rates vary across different eating patterns.
+```{r}
+library(stringr)
+
+# Define valid levels explicitly
+valid_dietary_levels <- c("Healthy", "Moderate", "Unhealthy")
+
+dep_summary <- depstud_cleaned %>%
+  # Remove rows with NA or unexpected values in either variable
+  filter(
+    !is.na(Depression),
+    !is.na(`Dietary Habits`),
+    `Dietary Habits` %in% valid_dietary_levels  # Keep only standard answers
+  ) %>%
+  mutate(
+    Depression = as.integer(as.character(Depression)),
+    Depressed = if_else(Depression == 1, "Depressed", "Not Depressed"),
+    `Dietary Habits` = factor(`Dietary Habits`, levels = valid_dietary_levels)
+  ) %>%
+  count(`Dietary Habits`, Depressed, name = "count") %>%
+  group_by(`Dietary Habits`) %>%
+  mutate(
+    total = sum(count),
+    percent = 100 * count / total
+  ) %>%
+  ungroup()
+
+# Plot
+ggplot(dep_summary, aes(x = "", y = percent, fill = Depressed)) +
+  geom_bar(stat = "identity", position = "stack", width = 1) +
+  geom_text(
+    aes(label = paste0(round(percent), "%")),
+    position = position_stack(vjust = 0.5),
+    size = 5,
+    color = "white"
+  ) +
+  facet_wrap(~`Dietary Habits`, ncol = 3) +
+  coord_polar(theta = "y") +
+  scale_fill_manual(values = c("Depressed" = "#E69F00", "Not Depressed" = "#56B4E9")) +
+  labs(
+    title = "Depression Across Dietary Habits",
+    fill = "Depression Status"
   ) +
   theme_minimal(base_size = 14) +
   theme(
     plot.title = element_text(face = "bold", hjust = 0.5),
-    axis.title = element_text(face = "bold"),
-    legend.position = "none"
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    strip.text = element_text(face = "bold")
   )
+
 ```
+The analysis reveals a clear trend: students who spend more hours working or studying each day are more likely to experience depression. This suggests that excessive academic or work-related demands may contribute to increased psychological stress and reduced mental well-being. The distribution shows a higher proportion of depression cases among those who exceed typical study or work durations. These findings highlight the importance of promoting balanced schedules and encouraging self-care alongside academic or professional responsibilities.
+```{r}
+depstud_cleaned %>%
+  mutate(
+    `Work/Study Hours` = as.numeric(`Work/Study Hours`),
+    Depression = as.integer(as.character(Depression)),
+    Depressed = if_else(Depression == 1, "Depressed", "Not Depressed")
+  ) %>%
+  filter(!is.na(`Work/Study Hours`), !is.na(Depressed)) %>%
+  ggplot(aes(x = `Work/Study Hours`, fill = Depressed)) +
+  geom_histogram(binwidth = 1, position = "fill", color = "black") +
+  scale_fill_manual(values = c("Depressed" = "#D55E00", "Not Depressed" = "#0072B2")) +
+  labs(
+    title = "Depression Rate by Work/Study Hours",
+    x = "Work/Study Hours per Day",
+    y = "Proportion of Students",
+    fill = "Depression Status"
+  ) +
+  theme_minimal()
 
-This scatter plot illustrates the relationship between sleep duration and depression levels among students. Sleep duration is categorized into "Less than 5 hours," "5–6 hours," "7–8 hours," "More than 8 hours," and "Others." Each point represents an individual student's depression score, with jittering applied to better display the density of data points. The majority of depression scores fall between 0 and 1.5 across all sleep categories. Students sleeping less than 7 hours tend to show a broader spread of depression levels compared to those sleeping 7–8 hours or more. The "Others" category contains very few observations, suggesting it represents a small and potentially atypical group. Different colors distinguish the sleep categories, and a minimalistic design enhances clarity and focus on the patterns within the data.
+
+```
+## Mental Health Risk Factors
+The analysis shows a strong link between suicidal thoughts and depression among students. A significantly higher percentage of students who reported having suicidal thoughts are also classified as depressed. In contrast, those who did not report such thoughts have a much lower prevalence of depression. This highlights the critical importance of identifying and supporting students experiencing suicidal ideation, as it is a strong indicator of underlying mental health challenges.
+```{r}
+# Suicidal Thoughts vs. Depression with updated colors
+depstud_cleaned %>%
+  mutate(
+    Depression = as.integer(as.character(Depression)),
+    Depressed = if_else(Depression == 1, "Depressed", "Not Depressed"),
+    Suicidal_Thoughts = str_trim(`Have you ever had suicidal thoughts ?`)
+  ) %>%
+  filter(Suicidal_Thoughts %in% c("Yes", "No")) %>%
+  count(Suicidal_Thoughts, Depressed) %>%
+  group_by(Suicidal_Thoughts) %>%
+  mutate(percentage = 100 * n / sum(n)) %>%
+  ggplot(aes(x = Suicidal_Thoughts, y = percentage, fill = Depressed)) +
+  geom_col(position = "stack", width = 0.6) +
+  geom_text(
+    aes(label = paste0(round(percentage, 1), "%")),
+    position = position_stack(vjust = 0.5),
+    color = "white",
+    size = 5
+  ) +
+  scale_fill_manual(values = c("Depressed" = "#984ea3", "Not Depressed" = "#4daf4a")) +
+  labs(
+    title = "Depression Status by Suicidal Thoughts",
+    x = "Suicidal Thoughts",
+    y = "Percentage of Students",
+    fill = "Depression Status"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5)
+  )
+
+```
+The chart shows a strong association between financial stress and depression among students. As financial stress levels increase from 0 to 5, the percentage of students experiencing depression rises significantly. Students reporting extreme financial stress (levels 4–5) have the highest depression rates, while those with little or no financial concerns report much lower rates. These findings emphasize the role of financial pressure as a key risk factor for student mental health.
+```{r}
+library(readr)
+
+depstud_cleaned %>%
+  # Remove rows with clearly non-numeric or unknown entries
+  filter(!`Financial Stress` %in% c("?", "", "NA", "na", "n/a", "NaN")) %>%
+  mutate(
+    `Financial Stress` = as.numeric(`Financial Stress`),
+    Depression = as.integer(as.character(Depression)),
+    Depressed = if_else(Depression == 1, "Depressed", "Not Depressed")
+  ) %>%
+  filter(!is.na(`Financial Stress`), `Financial Stress` <= 5) %>%
+  count(`Financial Stress`, Depressed) %>%
+  group_by(`Financial Stress`) %>%
+  mutate(percentage = 100 * n / sum(n)) %>%
+  ggplot(aes(x = factor(`Financial Stress`), y = percentage, fill = Depressed)) +
+  geom_col(position = "stack", width = 0.6) +
+  geom_text(
+    aes(label = paste0(round(percentage), "%")),
+    position = position_stack(vjust = 0.5),
+    color = "white",
+    size = 5
+  ) +
+  scale_fill_manual(values = c("Depressed" = "#CC79A7", "Not Depressed" = "#009E73")) +
+  labs(
+    title = "Depression Status by Financial Stress Level",
+    x = "Financial Stress (0 = None, 5 = Extreme)",
+    y = "Percentage of Students",
+    fill = "Depression Status"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5)
+  )
 
 
+```
+The chart indicates that students with a family history of mental illness are more likely to experience depression. Specifically, 61.3% of students with a family history reported being depressed, compared to 56% of those without such a history. Although the difference is not large, it suggests a potential link between family history and mental health, where genetic or environmental factors may contribute to higher rates of depression. However, further analysis is needed to fully understand the underlying causes.
+```{r}
+depstud_cleaned %>%
+  mutate(
+    Depression = as.integer(as.character(Depression)),
+    Depressed = if_else(Depression == 1, "Depressed", "Not Depressed"),
+    Family_History = str_trim(`Family History of Mental Illness`)
+  ) %>%
+  filter(Family_History %in% c("Yes", "No")) %>%
+  count(Family_History, Depressed) %>%
+  group_by(Family_History) %>%
+  mutate(percentage = 100 * n / sum(n)) %>%
+  ggplot(aes(x = Family_History, y = percentage, fill = Depressed)) +
+  geom_col(position = "stack", width = 0.6) +
+  geom_text(
+    aes(label = paste0(round(percentage, 1), "%")),
+    position = position_stack(vjust = 0.5),
+    color = "white",
+    size = 5
+  ) +
+  scale_fill_manual(values = c("Depressed" = "#7570b3", "Not Depressed" = "#1b9e77")) +
+  labs(
+    title = "Depression by Family History of Mental Illness",
+    x = "Family History of Mental Illness",
+    y = "Percentage of Students",
+    fill = "Depression Status"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5)
+  )
 
+```
+```{r}
+
+
+```
 
 
