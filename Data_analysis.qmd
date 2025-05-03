@@ -1,11 +1,12 @@
 ---
-title: "Data analysis"
+title: "Data Analysis"
 format:
   html:
     echo: false
     message: false
 
 ---
+
 ## Introduction
 
 In today's fast-paced academic environment, mental health issues such as depression have become increasingly prevalent among students. This project focuses on analyzing a large dataset of students to uncover patterns and factors associated with depression levels. The dataset contains information on demographics, academic pressure, work pressure, sleep habits, dietary practices, financial stress, satisfaction with study and work, and family history of mental illness.
