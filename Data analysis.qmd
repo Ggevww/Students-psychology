@@ -107,36 +107,50 @@ depstud_cleaned %>%
   theme_minimal()
 
 ```
-The bar chart shows the distribution of depression cases across different CGPA groups. Students with higher CGPA scores (8–10) report the highest number of depression cases, suggesting a potential link between academic achievement and mental health challenges.
-Lower CGPA groups (<6) exhibit fewer cases of depression, indicating that higher academic performance may correlate with increased psychological pressure.
+The bar chart shows the distribution of depression cases across different CGPA groups. Students with CGPA scores (8-9) report the highest number of depression cases, suggesting a potential link between academic achievement and mental health challenges.
 ```{r}
-depstud_cleaned %>%
-  mutate(
-    CGPA = as.numeric(CGPA),
-    CGPA_Group = case_when(
-      CGPA < 6 ~ "Low (<6)",
-      CGPA >= 6 & CGPA < 7 ~ "Mid-Low (6-7)",
-      CGPA >= 7 & CGPA < 8 ~ "Mid-High (7-8)",
-      CGPA >= 8 ~ "High (8-10)",
-      TRUE ~ NA_character_
-    )
-  ) %>%
-  filter(!is.na(CGPA_Group), Depression == 1) %>%  # ONLY Depression == "Yes"
-  group_by(CGPA_Group) %>%
-  summarise(Depressed_Count = n(), .groups = "drop") %>%
-  ggplot(aes(x = CGPA_Group, y = Depressed_Count, fill = CGPA_Group)) +
-  geom_col(width = 0.6, show.legend = FALSE) +
-  labs(
-    title = "Number of Depressed Students Across CGPA Groups",
-    x = "CGPA Group",
-    y = "Number of Depressed Students"
-  ) +
-  scale_fill_brewer(palette = "Set2") +
-  theme_minimal(base_size = 14) +
-  theme(
-    plot.title = element_text(face = "bold", hjust = 0.5)
-  )
+#| message: FALSE
+library(scales)
 
+# Load the dataset (adjust the file path as needed)
+data <- read.csv("data/student_depression.csv")
+
+# Create CGPA groups by binning the CGPA column
+data <- data %>%
+  mutate(CGPA_Group = cut(CGPA, 
+                          breaks = c(0, 6, 7, 8, 9, 10), 
+                          labels = c("<6", "6-7", "7-8", "8-9", "9-10"),
+                          include.lowest = TRUE))
+
+# Create proportion dataframe
+prop_df <- data %>%
+  group_by(CGPA_Group, Depression) %>%
+  summarise(Count = n(), .groups = "drop") %>%
+  group_by(CGPA_Group) %>%
+  mutate(Proportion = Count / sum(Count)) %>%
+  filter(Depression == 1)
+
+# Ensure CGPA_Group is ordered for proper plotting
+prop_df$CGPA_Group <- factor(prop_df$CGPA_Group, 
+                             levels = c("<6", "6-7", "7-8", "8-9", "9-10"))
+
+# Plot the proportion of depressed students per CGPA group
+ggplot(prop_df, aes(x = CGPA_Group, y = Proportion, fill = CGPA_Group)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Proportion of Depressed Students Across CGPA Groups",
+    x = "CGPA Range",
+    y = "Proportion of Depressed Students"
+  ) +
+  scale_y_continuous(labels = percent_format(scale = 100)) +
+  scale_fill_brewer(palette = "Blues") +  # Use a color palette for better visuals
+  theme_minimal() +
+  theme(
+    legend.position = "none",  # Remove legend since fill is based on x-axis
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.title = element_text(size = 12)
+  )
 ```
 The bar chart shows the number of depressed students across different degree types.
 Students in Class 12 report the highest number of depression cases, followed by degrees like B.Ed, B.Arch, and B.Com.
@@ -344,44 +358,10 @@ depstud_cleaned %>%
     plot.title = element_text(face = "bold", hjust = 0.5)
   )
 
-
 ```
-The chart indicates that students with a family history of mental illness are more likely to experience depression. Specifically, 61.3% of students with a family history reported being depressed, compared to 56% of those without such a history. Although the difference is not large, it suggests a potential link between family history and mental health, where genetic or environmental factors may contribute to higher rates of depression. However, further analysis is needed to fully understand the underlying causes.
-```{r}
-depstud_cleaned %>%
-  mutate(
-    Depression = as.integer(as.character(Depression)),
-    Depressed = if_else(Depression == 1, "Depressed", "Not Depressed"),
-    Family_History = str_trim(`Family History of Mental Illness`)
-  ) %>%
-  filter(Family_History %in% c("Yes", "No")) %>%
-  count(Family_History, Depressed) %>%
-  group_by(Family_History) %>%
-  mutate(percentage = 100 * n / sum(n)) %>%
-  ggplot(aes(x = Family_History, y = percentage, fill = Depressed)) +
-  geom_col(position = "stack", width = 0.6) +
-  geom_text(
-    aes(label = paste0(round(percentage, 1), "%")),
-    position = position_stack(vjust = 0.5),
-    color = "white",
-    size = 5
-  ) +
-  scale_fill_manual(values = c("Depressed" = "#7570b3", "Not Depressed" = "#1b9e77")) +
-  labs(
-    title = "Depression by Family History of Mental Illness",
-    x = "Family History of Mental Illness",
-    y = "Percentage of Students",
-    fill = "Depression Status"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(
-    plot.title = element_text(face = "bold", hjust = 0.5)
-  )
+## Conclusion
 
-```
-```{r}
-
-
-```
+Conclusion
+This analysis highlights critical connections between academic, lifestyle, and mental health factors influencing depression among students. Notably, higher CGPA ranges (8-9 and 9-10) correlate with increased depression rates, with around 60% of students in these groups reporting symptoms, suggesting that academic pressure may exacerbate mental health challenges. Additionally, factors like inadequate sleep, financial stress, and suicidal thoughts significantly contribute to higher depression rates, underscoring the need for targeted interventions. These insights emphasize the importance of balanced academic demands, financial support, and mental health resources to improve student well-being.
 
 
