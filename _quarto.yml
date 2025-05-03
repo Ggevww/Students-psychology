@@ -8,7 +8,7 @@ website:
       - href: index.qmd
         text: Home
         
-      - href: Data_Analysis2.qmd
+      - href: Data_analysis.qmd
         text: Data Analysis
         
       - href: about.qmd
@@ -16,7 +16,6 @@ website:
         
       - href: Sources.qmd
         text: Sources
-      
 
 format:
   html:
