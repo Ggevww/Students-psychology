@@ -360,6 +360,7 @@ depstud_cleaned %>%
 
 ```
 ## Conclusion
+
 Conclusion
 This analysis highlights critical connections between academic, lifestyle, and mental health factors influencing depression among students. Notably, higher CGPA ranges (8-9 and 9-10) correlate with increased depression rates, with around 60% of students in these groups reporting symptoms, suggesting that academic pressure may exacerbate mental health challenges. Additionally, factors like inadequate sleep, financial stress, and suicidal thoughts significantly contribute to higher depression rates, underscoring the need for targeted interventions. These insights emphasize the importance of balanced academic demands, financial support, and mental health resources to improve student well-being.
 
